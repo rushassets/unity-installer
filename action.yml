@@ -1,0 +1,17 @@
+name: 'GitHub Actions TypeScript'
+author: 'Aytuğ HAN'
+description: 'GitHub Actions with TypeScript'
+
+inputs:
+  milliseconds:
+    description: 'milliseconds'
+    required: true
+    default: '5000'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: anchor
+  color: orange

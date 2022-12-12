@@ -1,0 +1,49 @@
+name: Test macOS
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+        unity-version:
+          - 2021.3.15f1
+          #- 2020.3.42f1
+          #- 2019.4.40f1
+        unity-module:
+          #- android
+          - ios
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn all
+
+      - name: Install Unity
+        id: install-unity
+        uses: ./
+        with:
+          unity-version: ${{ matrix.unity-version }}
+          unity-modules: ${{ matrix.unity-modules }}
+
+      - name: Print Output
+        run: |
+          echo unity-version: ${{ steps.install-unity.outputs.unity-version }}
+          echo unity-path: ${{ steps.install-unity.outputs.unity-path }}
+          echo env UNITY_PATH: ${{ env.UNITY_PATH }}

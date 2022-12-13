@@ -45,6 +45,19 @@ inputs:
     description: This will prevent invoking commands as sudo
     required: false
     default: 'false'
+  unity-activate-license:
+    description: This will prevent invoking commands as sudo
+    required: false
+    default: 'false'
+  unity-username:
+    description: This is required for license activation
+    required: false
+  unity-password:
+    description: This is required for license activation
+    required: false
+  unity-serial:
+    description: This is required for license activation
+    required: false
 outputs:
   unity-version:
     description: Unity Version
@@ -54,6 +67,7 @@ outputs:
 runs:
   using: 'node16'
   main: 'dist/index.js'
+  post: 'lib/return-license.js'
 
 branding:
   icon: archive

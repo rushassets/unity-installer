@@ -12,6 +12,7 @@ async function run(): Promise<void> {
     const unityModulesChild = core.getBooleanInput('unity-modules-child')
     const projectPath = core.getInput('project-path')
     const isSelfHosted = core.getBooleanInput('is-self-hosted')
+    const unityActivateLicense = core.getBooleanInput('unity-activate-license')
 
     if (!unityVersion) {
       ;[unityVersion, unityVersionChangeset] = await findProjectVersion(
@@ -38,6 +39,23 @@ async function run(): Promise<void> {
     core.setOutput('unity-path', unityPath)
 
     core.exportVariable('UNITY_PATH', unityPath)
+
+    if (unityActivateLicense) {
+      const unityUsername = core.getInput('unity-username')
+      const unityPassword = core.getInput('unity-password')
+      const unitySerial = core.getInput('unity-serial')
+
+      if (unityUsername && unityPassword && unitySerial) {
+        const stdout = await executeAtUnity(
+          unityPath,
+          `-batchmode -nographics -quit -logFile "-" -projectPath "?" -username "${unityUsername}" -password "${unityPassword}" -serial "${unitySerial}"`
+        )
+
+        if (!stdout.includes('Licenses updated successfully')) {
+          throw new Error('Activation Failed')
+        }
+      }
+    }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
@@ -46,7 +64,6 @@ async function run(): Promise<void> {
 async function installUnityHub(isSelfHosted: boolean): Promise<void> {
   switch (process.platform) {
     case 'linux':
-      // TODO Check if Unity Hub already installed or not
       await execute(
         `bash -c "echo \\"deb https://hub.unity3d.com/linux/repos/deb stable main\\" | tee /etc/apt/sources.list.d/unityhub.list"`,
         {sudo: !isSelfHosted}
@@ -215,6 +232,19 @@ async function postInstall(isSelfHosted: boolean): Promise<void> {
       `chown -R ${process.env.USER} "/Library/Application Support/Unity"`,
       {sudo: !isSelfHosted}
     )
+  }
+}
+
+async function executeAtUnity(
+  unityPath: string,
+  args: string
+): Promise<string> {
+  if (process.platform === 'linux') {
+    return await execute(`xvfb-run --auto-servernum "${unityPath}" ${args}`, {
+      ignoreReturnCode: true
+    })
+  } else {
+    return await execute(`"${unityPath}" ${args}`, {ignoreReturnCode: true})
   }
 }
 

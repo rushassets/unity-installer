@@ -53,6 +53,7 @@ function run() {
             const unityModulesChild = core.getBooleanInput('unity-modules-child');
             const projectPath = core.getInput('project-path');
             const isSelfHosted = core.getBooleanInput('is-self-hosted');
+            const unityActivateLicense = core.getBooleanInput('unity-activate-license');
             if (!unityVersion) {
                 ;
                 [unityVersion, unityVersionChangeset] = yield findProjectVersion(projectPath);
@@ -69,6 +70,17 @@ function run() {
             core.setOutput('unity-version', unityVersion);
             core.setOutput('unity-path', unityPath);
             core.exportVariable('UNITY_PATH', unityPath);
+            if (unityActivateLicense) {
+                const unityUsername = core.getInput('unity-username');
+                const unityPassword = core.getInput('unity-password');
+                const unitySerial = core.getInput('unity-serial');
+                if (unityUsername && unityPassword && unitySerial) {
+                    const stdout = yield executeAtUnity(unityPath, `-batchmode -nographics -quit -logFile "-" -projectPath "?" -username "${unityUsername}" -password "${unityPassword}" -serial "${unitySerial}"`);
+                    if (!stdout.includes('Licenses updated successfully')) {
+                        throw new Error('Activation Failed');
+                    }
+                }
+            }
         }
         catch (error) {
             if (error instanceof Error)
@@ -81,7 +93,6 @@ function installUnityHub(isSelfHosted) {
     return __awaiter(this, void 0, void 0, function* () {
         switch (process.platform) {
             case 'linux':
-                // TODO Check if Unity Hub already installed or not
                 yield execute(`bash -c "echo \\"deb https://hub.unity3d.com/linux/repos/deb stable main\\" | tee /etc/apt/sources.list.d/unityhub.list"`, { sudo: !isSelfHosted });
                 yield execute('bash -c "wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor -o /etc/apt/trusted.gpg.d/unityhub.gpg"', { sudo: !isSelfHosted });
                 yield execute('apt-get update', { sudo: !isSelfHosted });
@@ -207,6 +218,18 @@ function postInstall(isSelfHosted) {
                 sudo: !isSelfHosted
             });
             yield execute(`chown -R ${process.env.USER} "/Library/Application Support/Unity"`, { sudo: !isSelfHosted });
+        }
+    });
+}
+function executeAtUnity(unityPath, args) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (process.platform === 'linux') {
+            return yield execute(`xvfb-run --auto-servernum "${unityPath}" ${args}`, {
+                ignoreReturnCode: true
+            });
+        }
+        else {
+            return yield execute(`"${unityPath}" ${args}`, { ignoreReturnCode: true });
         }
     });
 }

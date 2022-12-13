@@ -41,6 +41,10 @@ jobs:
         with:
           unity-version: ${{ matrix.unity-version }}
           unity-modules: ${{ matrix.unity-modules }}
+          unity-activate-license: true
+          unity-username: ${{ secrets.UNITY_USERNAME }}
+          unity-password: ${{ secrets.UNITY_PASSWORD }}
+          unity-serial: ${{ secrets.UNITY_SERIAL }}
 
       - name: Print Output
         run: |

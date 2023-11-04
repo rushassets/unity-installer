@@ -4,10 +4,11 @@
   "description": "Github Action which will install the unity.",
   "main": "src/main.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && yarn package",
     "format": "prettier src/**/*.ts --write",
     "format-check": "prettier src/**/*.ts --check",
     "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map --license licenses.txt && ncc build dist/return-license.js -o dist/return-license",
     "test": "jest --passWithNoTests",
     "all": "yarn build && yarn format && yarn lint && yarn package && yarn test"
   },

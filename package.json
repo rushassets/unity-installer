@@ -1,27 +1,26 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
-  "description": "GitHub Actions with TypeScript",
-  "main": "lib/main.js",
+  "name": "unity-installer",
+  "version": "1.0.0",
+  "description": "Github Action which will install the unity.",
+  "main": "src/main.ts",
   "scripts": {
     "build": "tsc",
     "format": "prettier src/**/*.ts --write",
     "format-check": "prettier src/**/*.ts --check",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
     "test": "jest --passWithNoTests",
     "all": "yarn build && yarn format && yarn lint && yarn package && yarn test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hanaytug/typescript-action.git"
+    "url": "git+https://github.com/rushassets/unity-installer.git"
   },
-  "author": "Aytuğ HAN",
+  "author": "Rush Assets",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hanaytug/typescript-action/issues"
+    "url": "https://github.com/rushassets/unity-installer/issues"
   },
-  "homepage": "https://github.com/hanaytug/typescript-action#readme",
+  "homepage": "https://github.com/rushassets/unity-installer#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/exec": "^1.1.1"

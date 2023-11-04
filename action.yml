@@ -67,7 +67,7 @@ outputs:
 runs:
   using: 'node16'
   main: 'dist/index.js'
-  post: 'lib/return-license.js'
+  post: 'dist/return-license.js'
 
 branding:
   icon: archive

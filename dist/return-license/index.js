@@ -42,17 +42,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const exec = __importStar(__nccwpck_require__(514));
 function run() {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const unityActivateLicense = core.getBooleanInput('unity-activate-license');
-            if (unityActivateLicense) {
-                const unityPath = ((_a = process.env) === null || _a === void 0 ? void 0 : _a.UNITY_PATH) || '';
+            const unityReturnLicense = core.getBooleanInput('unity-return-license');
+            console.log('Unity return license: ', unityReturnLicense);
+            if (unityReturnLicense) {
+                console.log('Returning license...');
+                const unityPath = (_b = (_a = process.env) === null || _a === void 0 ? void 0 : _a.UNITY_PATH) !== null && _b !== void 0 ? _b : '';
                 const unityUsername = core.getInput('unity-username');
                 const unityPassword = core.getInput('unity-password');
-                if (unityUsername && unityPassword) {
-                    yield executeAtUnity(unityPath, `-batchmode -nographics -quit -logFile "-" -projectPath "?" -returnlicense -username "${unityUsername}" -password "${unityPassword}"`);
-                }
+                yield executeAtUnity(unityPath, `-batchmode -nographics -quit -logFile "-" -projectPath "?" -returnlicense -username "${unityUsername}" -password "${unityPassword}"`);
             }
         }
         catch (error) {

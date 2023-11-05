@@ -3,9 +3,9 @@ import * as exec from '@actions/exec'
 
 async function run(): Promise<void> {
   try {
-    const unityActivateLicense = core.getBooleanInput('unity-return-license')
+    const unityReturnLicense = core.getBooleanInput('unity-return-license')
 
-    if (unityActivateLicense) {
+    if (unityReturnLicense) {
       const unityPath = process.env?.UNITY_PATH ?? ''
       const unityUsername = core.getInput('unity-username')
       const unityPassword = core.getInput('unity-password')

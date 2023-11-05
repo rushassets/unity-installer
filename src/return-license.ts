@@ -5,17 +5,18 @@ async function run(): Promise<void> {
   try {
     const unityReturnLicense = core.getBooleanInput('unity-return-license')
 
+    console.log('Unity return license: ', unityReturnLicense)
+
     if (unityReturnLicense) {
+      console.log('Returning license...')
       const unityPath = process.env?.UNITY_PATH ?? ''
       const unityUsername = core.getInput('unity-username')
       const unityPassword = core.getInput('unity-password')
 
-      if (unityUsername && unityPassword) {
-        await executeAtUnity(
-          unityPath,
-          `-batchmode -nographics -quit -logFile "-" -projectPath "?" -returnlicense -username "${unityUsername}" -password "${unityPassword}"`
-        )
-      }
+      await executeAtUnity(
+        unityPath,
+        `-batchmode -nographics -quit -logFile "-" -projectPath "?" -returnlicense -username "${unityUsername}" -password "${unityPassword}"`
+      )
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)

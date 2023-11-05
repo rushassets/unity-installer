@@ -49,6 +49,10 @@ inputs:
     description: This will prevent invoking commands as sudo
     required: false
     default: 'false'
+  unity-return-license:
+    description: This will prevent invoking commands as sudo
+    required: false
+    default: 'false'
   unity-username:
     description: This is required for license activation
     required: false
